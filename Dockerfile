@@ -1,14 +1,23 @@
-# Utiliza una imagen base de Java 17
-FROM adoptopenjdk/openjdk17:jre
+# Usar una imagen base con JDK 11 y Maven
+FROM maven:3.8.4-openjdk-17 AS build
 
-# Establece el directorio de trabajo en /app
+# Establecer un directorio de trabajo
 WORKDIR /app
 
-# Copia el archivo JAR generado por Maven a la imagen
-COPY target/serviceauth-0.0.1-SNAPSHOT.jar app.jar
+# Copiar archivos de tu proyecto al directorio de trabajo
+COPY . /app
 
-# Expone el puerto 8080 (o el puerto que estés utilizando en tu aplicación Spring Boot)
+# Ejecutar Maven para construir el proyecto
+RUN mvn clean package
+
+# Crear una nueva imagen basada en OpenJDK 11
+FROM openjdk:17.0-jdk
+
+# Exponer el puerto que utilizará la aplicación
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación al iniciar el contenedor
-CMD ["java", "-jar", "app.jar"]
+# Copiar el archivo JAR construido desde la etapa anterior
+COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar /app/demo-0.0.1-SNAPSHOT.jar
+
+# Establecer el punto de entrada para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "/app/demo-0.0.1-SNAPSHOT.jar"]
