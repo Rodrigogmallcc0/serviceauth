@@ -16,8 +16,9 @@ FROM openjdk:17.0-jdk
 # Exponer el puerto que utilizará la aplicación
 EXPOSE 8080
 
+# COPY target/serviceauth-0.0.1-SNAPSHOT.jar app.jar
 # Copiar el archivo JAR construido desde la etapa anterior
-COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar /app/demo-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/target/serviceauth-0.0.1-SNAPSHOT.jar /app/serviceauth-0.0.1-SNAPSHOT.jar
 
 # Establecer el punto de entrada para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "/app/demo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/serviceauth-0.0.1-SNAPSHOT.jar"]
